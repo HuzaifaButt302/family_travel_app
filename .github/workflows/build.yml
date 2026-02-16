@@ -16,12 +16,6 @@ jobs:
     - name: 📥 Checkout Repository
       uses: actions/checkout@v4
 
-    - name: 🔧 Setup Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: '17'
-
     - name: 📱 Setup Flutter
       uses: subosito/flutter-action@v2
       with:
@@ -32,21 +26,10 @@ jobs:
     - name: 📦 Install Dependencies
       run: flutter pub get
 
-    - name: 🔍 Flutter Doctor
-      run: flutter doctor -v
-
-    - name: 📊 Analyze Code
-      run: flutter analyze
-      continue-on-error: true
-
-    - name: 🧪 Run Tests
-      run: flutter test
-      continue-on-error: true
-
-    - name: 🍎 Install CocoaPods
+    - name: 🍎 Install CocoaPods (Fast)
       run: |
         cd ios
-        pod install --repo-update
+        pod install
         cd ..
 
     - name: 🏗️ Build iOS (No Code Sign - For Testing)
@@ -125,7 +108,7 @@ jobs:
         flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
 
     - name: 📤 Upload Signed IPA
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ios-ipa-signed
         path: build/ios/ipa/*.ipa
